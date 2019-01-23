@@ -1,0 +1,36 @@
+{
+    "log4js": {
+        "appenders": {
+            "out": {
+                "type": "console"
+            },
+            "default": {
+                "type": "dateFile",
+                "filename": "logs/info",
+                "pattern": "-yyyy-MM-dd.log",
+                "alwaysIncludePattern": true
+            },
+            "error": {
+                "type": "dateFile",
+                "filename": "logs/error",
+                "pattern": "-yyyy-MM-dd.log",
+                "alwaysIncludePattern": true
+            }
+        },
+        "categories": {
+            "default": {
+                "appenders": [
+                    "out",
+                    "default"
+                ],
+                "level": "info"
+            },
+            "error": {
+                "appenders": [
+                    "error"
+                ],
+                "level": "error"
+            }
+        }
+    }
+}

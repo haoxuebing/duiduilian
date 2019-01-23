@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var multer = require('multer');
+var config=require('config');
+var logs = require('./routes/logger');
+logs.init(config.log4js);
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
