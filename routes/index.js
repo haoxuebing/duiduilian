@@ -2,32 +2,46 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var logs = require('./logger');
-var cheerio = require('cheerio');
+var urlencode = require('urlencode');
+let fs = require('fs');
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
-
-  request('http://192.168.34.127:5003/', (err, response, body) => {
-    res.send(body);
-  })
-
-  // res.render('index', { title: 'Express' });
+  res.render('Fort', {
+    title: '对对联'
+  });
 });
 
-router.post('/', function (req, res, next) {
+router.post('/seq2seq', function (req, res, next) {
 
-  let sl = req.body.couplet_input;
-  request.post('http://192.168.34.127:5003/', {
-    form: {
-      "couplet_input": sl || ''
-    }
-  }, (err, response, body) => {
-    var $ = cheerio.load(body);
-    var $html = $('textarea');
-    logs.info("上联：" + sl + '  下联：' + $html.text());
-    res.send(body);
+  let sl = req.body.txt;
+  let url = 'http://localhost:5000/' + urlencode(sl)
+  request(url, (err, response, body) => {
+    let xia = JSON.parse(body)["下联"]
+    logs.info("上联：" + sl + '  下联：' + xia + '<br/>');
+    res.send(xia);
   })
-
-  // res.render('index', { title: 'Express' });
 });
+
+router.get('/about', (req, res) => {
+  let nowstr = getNowFormatDate()
+  let data = fs.readFileSync(`./logs/info-${nowstr}.log`).toString()
+  res.send(data)
+})
+
+function getNowFormatDate() {
+  var date = new Date();
+  var seperator1 = "-";
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+  return currentdate;
+}
 
 module.exports = router;
