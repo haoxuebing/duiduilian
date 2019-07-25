@@ -23,20 +23,31 @@ router.post('/seq2seq', function (req, res, next) {
   })
 });
 
-router.get('/about', (req, res) => {
+router.get('/log', (req, res) => {
   let nowstr = getNowFormatDate()
-  let data = fs.readFileSync(`./logs/info-${nowstr}.log`).toString()
-  res.send(data)
+  sendLog(nowstr, res);
 })
 
 
-router.get('/about/:m/:d', (req, res) => {
+router.get('/log/:m/:d', (req, res) => {
   let m = req.params['m']
   let d = req.params['d']
   let nowstr = getNowFormatDate(m, d)
-  let data = fs.readFileSync(`./logs/info-${nowstr}.log`).toString()
-  res.send(data)
+  sendLog(nowstr, res);
 })
+
+function sendLog(nowstr, res) {
+  let filepath = `./logs/info-${nowstr}.log`;
+  fs.exists(filepath, function (exists) {
+    if (exists) {
+      let data = fs.readFileSync(filepath).toString();
+      res.send(data);
+    }
+    else {
+      res.send("No logs");
+    }
+  });
+}
 
 function getNowFormatDate(month, strDate) {
   var date = new Date();
