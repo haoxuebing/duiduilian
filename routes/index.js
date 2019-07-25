@@ -29,11 +29,24 @@ router.get('/about', (req, res) => {
   res.send(data)
 })
 
-function getNowFormatDate() {
+
+router.get('/about/:m/:d', (req, res) => {
+  let m = req.params['m']
+  let d = req.params['d']
+  let nowstr = getNowFormatDate(m, d)
+  let data = fs.readFileSync(`./logs/info-${nowstr}.log`).toString()
+  res.send(data)
+})
+
+function getNowFormatDate(month, strDate) {
   var date = new Date();
   var seperator1 = "-";
-  var month = date.getMonth() + 1;
-  var strDate = date.getDate();
+  if (month == undefined) {
+    month = date.getMonth() + 1;
+  }
+  if (strDate == undefined) {
+    strDate = date.getDate();
+  }
   if (month >= 1 && month <= 9) {
     month = "0" + month;
   }
